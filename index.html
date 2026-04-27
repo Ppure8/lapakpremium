@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LapakPremium — Paket Berlangganan Premium</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital,wght@1,700;1,800&display=swap&display=swap');
+
+  :root {
+    --bg: #080810;
+    --bg2: #0d0d1a;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #f0f0ff;
+    --muted: #7878a0;
+    --accent1: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cf0fc;
+    --gold: #ffd56b;
+    --green: #56fcb4;
+    --radius: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999;
+  }
+
+  /* ORBS */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); opacity: 0.18; pointer-events: none; z-index: 0; animation: floatOrb 12s ease-in-out infinite alternate; }
+  .orb1 { width: 600px; height: 600px; background: var(--accent1); top: -200px; left: -200px; animation-delay: 0s; }
+  .orb2 { width: 500px; height: 500px; background: var(--accent2); bottom: -150px; right: -150px; animation-delay: -4s; }
+  .orb3 { width: 400px; height: 400px; background: var(--accent3); top: 40%; left: 40%; animation-delay: -8s; }
+  @keyframes floatOrb { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,40px) scale(1.05); } }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(8,8,16,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
+    will-change: transform;
+  }
+  .nav-logo { display: inline-flex; align-items: baseline; gap: 2px; text-decoration: none; }
+  .brand-lapak { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.55rem; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--accent1), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .brand-premium { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 800; font-size: 1.35rem; letter-spacing: 0.5px; background: linear-gradient(135deg, var(--accent2), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-wa { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #25d366, #128c7e); padding: 10px 22px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; text-decoration: none; color: #fff; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
+  .nav-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
+  .nav-wa svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 80px; position: relative; z-index: 1; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,92,252,0.15); border: 1px solid rgba(124,92,252,0.35); border-radius: 50px; padding: 6px 18px; font-size: 0.82rem; color: #b09fff; margin-bottom: 28px; letter-spacing: 0.05em; animation: fadeUp 0.7s ease both; }
+  .badge::before { content: '✦'; font-size: 0.7rem; color: var(--accent1); }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.6rem, 6vw, 5.5rem); font-weight: 800; line-height: 1.08; margin-bottom: 24px; animation: fadeUp 0.8s 0.1s ease both; }
+  .hero h1 .line2 { background: linear-gradient(90deg, var(--accent2), var(--gold), var(--accent1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { max-width: 540px; color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 44px; animation: fadeUp 0.8s 0.2s ease both; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.3s ease both; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); padding: 14px 34px; border-radius: 50px; font-weight: 600; font-size: 1rem; text-decoration: none; color: #fff; box-shadow: 0 8px 32px rgba(124,92,252,0.4); transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(124,92,252,0.55); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--card-border); background: var(--card); padding: 14px 34px; border-radius: 50px; font-weight: 500; font-size: 1rem; text-decoration: none; color: var(--text); transition: border-color 0.2s, background 0.2s; }
+  .btn-secondary:hover { border-color: var(--accent1); background: rgba(124,92,252,0.1); }
+
+  /* STATS */
+  .stats { position: relative; z-index: 1; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; padding: 60px 40px; border-top: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, var(--accent3), var(--accent1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+  /* SECTION HEADER */
+  .section-header { text-align: center; margin-bottom: 56px; position: relative; z-index: 1; }
+  .section-tag { display: inline-block; background: rgba(92,240,252,0.1); border: 1px solid rgba(92,240,252,0.25); border-radius: 50px; padding: 5px 16px; font-size: 0.78rem; color: var(--accent3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+  .section-header h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.2; }
+  .section-header p { color: var(--muted); margin-top: 12px; font-size: 1rem; }
+
+  /* CATALOG GRID */
+  .catalog { padding: 90px 40px; position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+
+  /* CARD BASE */
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 28px; position: relative; overflow: hidden; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+  .card:hover { transform: translateY(-6px); }
+  .card[data-color="red"]:hover    { border-color: rgba(255,0,0,0.35); box-shadow: 0 16px 48px rgba(255,0,0,0.15); }
+  .card[data-color="blue"]:hover   { border-color: rgba(0,120,255,0.35); box-shadow: 0 16px 48px rgba(0,120,255,0.15); }
+  .card[data-color="sky"]:hover    { border-color: rgba(0,200,255,0.35); box-shadow: 0 16px 48px rgba(0,200,255,0.15); }
+  .card[data-color="green"]:hover  { border-color: rgba(30,215,96,0.35); box-shadow: 0 16px 48px rgba(30,215,96,0.15); }
+  .card[data-color="yellow"]:hover { border-color: rgba(255,210,0,0.35); box-shadow: 0 16px 48px rgba(255,210,0,0.15); }
+  .card[data-color="orange"]:hover { border-color: rgba(255,153,0,0.35); box-shadow: 0 16px 48px rgba(255,153,0,0.15); }
+  .card[data-color="purple"]:hover { border-color: rgba(124,92,252,0.45); box-shadow: 0 16px 48px rgba(124,92,252,0.2); }
+  .card[data-color="teal"]:hover   { border-color: rgba(0,212,170,0.35); box-shadow: 0 16px 48px rgba(0,212,170,0.15); }
+  .card[data-color="cyan"]:hover   { border-color: rgba(0,240,255,0.35); box-shadow: 0 16px 48px rgba(0,240,255,0.15); }
+  .card[data-color="black"]:hover  { border-color: rgba(255,255,255,0.2); box-shadow: 0 16px 48px rgba(255,255,255,0.08); }
+
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+
+  /* BRAND LOGO — uniform square container */
+  .brand-logo {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+    background: #111;
+  }
+  .brand-logo img {
+    width: 100%; height: 100%;
+    object-fit: cover; border-radius: 14px;
+    display: block;
+    /* Force load — no lazy */
+    loading: eager;
+  }
+  /* Text-only logos */
+  .brand-logo.text-logo {
+    font-family: 'Syne', sans-serif; font-weight: 900;
+    font-size: 1rem; letter-spacing: -0.5px;
+  }
+
+  .popular-tag { background: linear-gradient(135deg, var(--accent2), var(--gold)); color: #0a0a0a; font-size: 0.68rem; font-weight: 700; padding: 4px 12px; border-radius: 50px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .card h3 { font-family: 'Syne', sans-serif; font-size: 1.18rem; font-weight: 700; margin-bottom: 8px; }
+  .card p.desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 20px; }
+
+  .features { list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 7px; }
+  .features li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.84rem; color: rgba(240,240,255,0.75); }
+  .features li::before { content: '✓'; font-weight: 700; flex-shrink: 0; margin-top: 1px; font-size: 0.75rem; }
+  .card[data-color="red"]    .features li::before { color: #ff4444; }
+  .card[data-color="blue"]   .features li::before { color: #4488ff; }
+  .card[data-color="sky"]    .features li::before { color: #00c8ff; }
+  .card[data-color="green"]  .features li::before { color: #1ed760; }
+  .card[data-color="yellow"] .features li::before { color: #ffd200; }
+  .card[data-color="orange"] .features li::before { color: #ff9900; }
+  .card[data-color="purple"] .features li::before { color: #b09fff; }
+  .card[data-color="teal"]   .features li::before { color: #00d4aa; }
+  .card[data-color="cyan"]   .features li::before { color: #00f0ff; }
+  .card[data-color="black"]  .features li::before { color: #ffffff; }
+
+  .price-row { display: flex; align-items: flex-end; justify-content: space-between; padding-top: 18px; border-top: 1px solid var(--card-border); }
+  .price { font-family: 'Syne', sans-serif; }
+  .price-amount { font-size: 1.55rem; font-weight: 800; }
+  .price-period { font-size: 0.8rem; color: var(--muted); }
+  .price-slash { font-size: 0.82rem; color: var(--muted); text-decoration: line-through; margin-bottom: 2px; }
+
+  .btn-order { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 50px; font-size: 0.84rem; font-weight: 600; text-decoration: none; color: #fff; transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap; }
+  .btn-order:hover { transform: scale(1.05); }
+  .btn-order svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+
+  /* HOW IT WORKS */
+  .how { padding: 90px 40px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 10px; }
+  .step { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 32px 24px; text-align: center; transition: transform 0.3s; }
+  .step:hover { transform: translateY(-4px); }
+  .step-num { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; margin: 0 auto 16px; }
+  .step h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 8px; }
+  .step p { color: var(--muted); font-size: 0.87rem; line-height: 1.6; }
+
+  /* TRUST */
+  .trust { padding: 60px 40px; max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+  .trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .trust-item { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 22px; display: flex; align-items: flex-start; gap: 14px; }
+  .trust-icon { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: rgba(124,92,252,0.15); }
+  .trust-item h5 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .trust-item p { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+
+  /* FLOATING WA */
+  .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 200; display: flex; align-items: center; gap: 12px; text-decoration: none; animation: pulse 2.5s ease-in-out infinite; }
+  .wa-float-btn { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #25d366, #128c7e); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(37,211,102,0.45); transition: transform 0.2s; }
+  .wa-float-btn svg { width: 28px; height: 28px; fill: #fff; }
+  .wa-float:hover .wa-float-btn { transform: scale(1.1); }
+  .wa-float-label { background: #fff; color: #0a0a0a; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.84rem; box-shadow: 0 4px 16px rgba(0,0,0,0.3); white-space: nowrap; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+  footer { text-align: center; padding: 40px 20px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 0.85rem; position: relative; z-index: 1; }
+  footer .foot-logo { margin-bottom: 10px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .brand-lapak { font-size: 1.2rem; }
+    .brand-premium { font-size: 1.05rem; }
+    .catalog, .how, .trust { padding: 70px 16px; }
+    .stats { gap: 30px; padding: 50px 20px; }
+    .wa-float-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <span class="brand-lapak">Lapak</span><span class="brand-premium">Premium</span>
+  </a>
+  <a href="https://wa.me/6289504483200?text=Halo%20LapakPremium!%20Saya%20mau%20tanya%20tentang%20paket%20berlangganan" target="_blank" class="nav-wa">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Hubungi Kami
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">✦ Harga Terjangkau · Garansi Aktif · Proses Cepat</div>
+  <h1>
+    Nikmati Semua Langganan<br>
+    <span class="line2">Premium Favorit Kamu</span>
+  </h1>
+  <p>Satu tempat untuk semua kebutuhan streaming, kreativitas, dan produktivitas digital kamu — dengan harga yang bersahabat.</p>
+  <div class="hero-cta">
+    <a href="#catalog" class="btn-primary">🔥 Lihat Semua Paket</a>
+    <a href="https://wa.me/6289504483200?text=Halo%20LapakPremium!%20Saya%20mau%20tanya%20tentang%20paket%20berlangganan" target="_blank" class="btn-secondary">
+      <svg style="width:16px;height:16px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Tanya via WhatsApp
+    </a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">2.500+</div><div class="stat-label">Pelanggan Aktif</div></div>
+  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Platform Tersedia</div></div>
+  <div class="stat"><div class="stat-num">99%</div><div class="stat-label">Kepuasan Pelanggan</div></div>
+  <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Dukungan CS</div></div>
+</div>
+
+<!-- CATALOG -->
+<section class="catalog" id="catalog">
+  <div class="section-header">
+    <div class="section-tag">Katalog Produk</div>
+    <h2>Pilih Paket Berlangganan Kamu</h2>
+    <p>Semua paket dikerjakan manual & terverifikasi aktif. Pembayaran via Transfer / QRIS.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- YOUTUBE PREMIUM -->
+    <div class="card" data-color="red">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#ff0000">
+          <!-- YouTube SVG logo inline -->
+          <svg viewBox="0 0 90 64" xmlns="http://www.w3.org/2000/svg" style="width:38px;height:27px">
+            <path d="M88.1 10c-1-3.8-4-6.8-7.8-7.8C73.4 0 45 0 45 0S16.6 0 9.7 2.2C5.9 3.2 2.9 6.2 1.9 10 0 17 0 32 0 32s0 15 1.9 22c1 3.8 4 6.8 7.8 7.8C16.6 64 45 64 45 64s28.4 0 35.3-2.2c3.8-1 6.8-4 7.8-7.8C90 47 90 32 90 32s0-15-1.9-22z" fill="#fff"/>
+            <polygon points="36,46 60,32 36,18" fill="#ff0000"/>
+          </svg>
+        </div>
+        <span class="popular-tag">🔥 Terlaris</span>
+      </div>
+      <h3>YouTube Premium</h3>
+      <p class="desc">Nonton video tanpa iklan, download konten favorit, dan nikmati YouTube Music gratis kapan saja.</p>
+      <ul class="features">
+        <li>Bebas iklan di semua video</li>
+        <li>Download video offline</li>
+        <li>YouTube Music Premium included</li>
+        <li>Background play saat layar mati</li>
+        <li>YouTube Kids tanpa iklan</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 89.000</div>
+          <div class="price-amount" style="color:#ff4444">Rp 18.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20YouTube%20Premium" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#ff0000,#cc0000)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- NETFLIX -->
+    <div class="card" data-color="red">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#000;overflow:hidden;padding:0"><img src="data:image/jpeg;base64,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" alt="Netflix" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>
+      </div>
+      <h3>Netflix</h3>
+      <p class="desc">Ribuan film & serial terbaik dunia, anime, dokumenter, dan konten original Netflix eksklusif.</p>
+      <ul class="features">
+        <li>Akses semua konten Netflix</li>
+        <li>Kualitas hingga Full HD / 4K</li>
+        <li>Netflix Originals & Series terbaru</li>
+        <li>Mode download offline</li>
+        <li>Multi-profil keluarga</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 180.000</div>
+          <div class="price-amount" style="color:#e50914">Rp 35.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Netflix" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#e50914,#8b0000)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- SPOTIFY -->
+    <div class="card" data-color="green">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#191414">
+          <!-- Spotify SVG -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:34px;height:34px">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" fill="#1db954"/>
+          </svg>
+        </div>
+        <span class="popular-tag">🔥 Terlaris</span>
+      </div>
+      <h3>Spotify Premium</h3>
+      <p class="desc">Streaming musik tanpa batas, tanpa iklan, kualitas audio tinggi, dan download lagu favorit kamu.</p>
+      <ul class="features">
+        <li>80 juta+ lagu & podcast</li>
+        <li>Audio kualitas Very High (320kbps)</li>
+        <li>Download musik offline</li>
+        <li>Skip lagu tanpa batas</li>
+        <li>Tanpa iklan sama sekali</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 59.900</div>
+          <div class="price-amount" style="color:#1db954">Rp 25.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Spotify%20Premium" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#1db954,#158a3c)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- CANVA PRO -->
+    <div class="card" data-color="sky">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#7d2ae8">
+          <!-- Canva C SVG -->
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px">
+            <circle cx="50" cy="50" r="48" fill="#7d2ae8"/>
+            <text x="50" y="68" text-anchor="middle" font-size="62" font-weight="900" font-family="Arial,sans-serif" fill="#fff">C</text>
+          </svg>
+        </div>
+      </div>
+      <h3>Canva Pro</h3>
+      <p class="desc">Desain grafis profesional dengan ribuan template premium, background remover, dan fitur Brand Kit.</p>
+      <ul class="features">
+        <li>100 juta+ foto & elemen premium</li>
+        <li>Background Remover otomatis</li>
+        <li>Brand Kit & Magic Resize</li>
+        <li>1TB penyimpanan cloud</li>
+        <li>Akses semua template Pro</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 120.000</div>
+          <div class="price-amount" style="color:#00c4cc">Rp 22.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Canva%20Pro" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#00c4cc,#7e5ea2)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- CHATGPT PLUS -->
+    <div class="card" data-color="teal">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#10a37f">
+          <!-- OpenAI SVG -->
+          <svg viewBox="0 0 41 41" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;fill:#fff">
+            <path d="M37.532 16.87a9.963 9.963 0 00-.856-8.184 10.078 10.078 0 00-10.855-4.835 9.964 9.964 0 00-7.505-3.348 10.079 10.079 0 00-9.612 6.977 9.967 9.967 0 00-6.664 4.834 10.08 10.08 0 001.24 11.817 9.965 9.965 0 00.856 8.185 10.079 10.079 0 0010.855 4.835 9.965 9.965 0 007.504 3.347 10.078 10.078 0 009.617-6.981 9.967 9.967 0 006.663-4.834 10.079 10.079 0 00-1.243-11.813zM22.498 37.886a7.474 7.474 0 01-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 00.655-1.134V19.054l3.366 1.944a.12.12 0 01.066.092v9.299a7.505 7.505 0 01-7.49 7.496zM6.392 31.006a7.471 7.471 0 01-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 001.308 0l9.724-5.614v3.888a.12.12 0 01-.048.103l-8.051 4.649a7.504 7.504 0 01-10.24-2.744zM4.297 13.62A7.469 7.469 0 018.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 00.654 1.132l9.723 5.614-3.366 1.944a.12.12 0 01-.114.012L7.044 23.86a7.504 7.504 0 01-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 01.114-.012l8.048 4.648a7.498 7.498 0 01-1.158 13.528v-9.476a1.293 1.293 0 00-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 00-1.308 0l-9.723 5.614v-3.888a.12.12 0 01.048-.103l8.05-4.645a7.497 7.497 0 0111.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 01-.065-.092v-9.299a7.497 7.497 0 0112.293-5.756 6.94 6.94 0 00-.236.134l-7.965 4.6a1.294 1.294 0 00-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.5v4.999l-4.331 2.5-4.331-2.5V18z"/>
+          </svg>
+        </div>
+        <span class="popular-tag">🤖 AI #1</span>
+      </div>
+      <h3>ChatGPT Plus</h3>
+      <p class="desc">Akses model GPT-4o terbaru, DALL·E image generation, browsing internet, dan plugins eksklusif.</p>
+      <ul class="features">
+        <li>Akses GPT-4o & GPT-4 Turbo</li>
+        <li>Generate gambar dengan DALL·E 3</li>
+        <li>Browsing internet real-time</li>
+        <li>Upload & analisis dokumen/gambar</li>
+        <li>Akses plugin & GPT Store</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 320.000</div>
+          <div class="price-amount" style="color:#10a37f">Rp 40.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20ChatGPT%20Plus" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#10a37f,#0d8a6d)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- GEMINI AI -->
+    <div class="card" data-color="blue">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#fff">
+          <!-- Google Gemini gradient star SVG -->
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px">
+            <defs>
+              <linearGradient id="gm1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4285f4"/>
+                <stop offset="100%" stop-color="#34a853"/>
+              </linearGradient>
+              <linearGradient id="gm2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ea4335"/>
+                <stop offset="100%" stop-color="#fbbc05"/>
+              </linearGradient>
+            </defs>
+            <path d="M14 0 C14 7.732 7.732 14 0 14 C7.732 14 14 20.268 14 28 C14 20.268 20.268 14 28 14 C20.268 14 14 7.732 14 0Z" fill="url(#gm1)"/>
+          </svg>
+        </div>
+        <span class="popular-tag">🤖 AI Terbaru</span>
+      </div>
+      <h3>Gemini Advanced</h3>
+      <p class="desc">Google AI paling canggih dengan Gemini Ultra, integrasi Google Workspace, dan 2TB Google One storage.</p>
+      <ul class="features">
+        <li>Akses Gemini Ultra 1.5 Pro</li>
+        <li>2TB Google One cloud storage</li>
+        <li>Integrasi Gmail & Google Docs</li>
+        <li>Analisis gambar & dokumen</li>
+        <li>Google One Premium benefits</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 275.000</div>
+          <div class="price-amount" style="color:#4285f4">Rp 25.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Gemini%20Advanced" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#4285f4,#34a853)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- VIDIO PREMIER -->
+    <div class="card" data-color="orange">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#ff6b35">
+          <span style="font-family:'Syne',sans-serif;font-weight:900;font-size:0.85rem;color:#fff;letter-spacing:-0.5px">vidio</span>
+        </div>
+      </div>
+      <h3>Vidio Premier</h3>
+      <p class="desc">Platform streaming lokal terlengkap dengan konten olahraga live, sinetron, dan film Indonesia terbaru.</p>
+      <ul class="features">
+        <li>Siaran langsung Liga 1 & BRI Liga</li>
+        <li>Live streaming Serie A & Liga Champions</li>
+        <li>Ribuan film & series Indonesia</li>
+        <li>Konten tanpa iklan</li>
+        <li>Download offline tersedia</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 39.000</div>
+          <div class="price-amount" style="color:#ff6b35">Rp 25.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Vidio%20Premier" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#ff6b35,#f7931e)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- PRIME VIDEO -->
+    <div class="card" data-color="cyan">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#00a8e1">
+          <!-- Amazon Prime play icon -->
+          <svg viewBox="0 0 60 38" xmlns="http://www.w3.org/2000/svg" style="width:38px;height:24px">
+            <rect width="60" height="38" rx="4" fill="#00a8e1"/>
+            <text x="30" y="26" text-anchor="middle" font-size="11" font-weight="700" font-family="Arial,sans-serif" fill="#fff">prime</text>
+            <polygon points="8,16 8,28 18,22" fill="#fff"/>
+          </svg>
+        </div>
+      </div>
+      <h3>Prime Video</h3>
+      <p class="desc">Konten original Amazon Prime eksklusif, film blockbuster, dan serial award-winning dari seluruh dunia.</p>
+      <ul class="features">
+        <li>Amazon Originals eksklusif</li>
+        <li>Ribuan film & serial premium</li>
+        <li>Download & nonton offline</li>
+        <li>Kualitas 4K Ultra HD & HDR</li>
+        <li>Subtitle & audio multibahasa</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 79.000</div>
+          <div class="price-amount" style="color:#00a8e1">Rp 20.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Prime%20Video" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#00a8e1,#0077b5)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- VIU PREMIUM -->
+    <div class="card" data-color="yellow">
+      <div class="card-top">
+        <div class="brand-logo text-logo" style="background:linear-gradient(135deg,#ffd200,#ff8c00);color:#0a0a0a">VIU</div>
+      </div>
+      <h3>VIU Premium</h3>
+      <p class="desc">Drama Korea, Jepang & Asia terlengkap dengan subtitle Indonesia, update episode terbaru tercepat.</p>
+      <ul class="features">
+        <li>K-Drama & J-Drama terlengkap</li>
+        <li>Update episode dalam 8 jam tayang</li>
+        <li>Subtitle Indonesia tersedia</li>
+        <li>Stream HD tanpa buffering</li>
+        <li>Konten eksklusif VIU Original</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 35.000</div>
+          <div class="price-amount" style="color:#ffd200">Rp 25.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20VIU%20Premium" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#ffd200,#ff8c00);color:#0a0a0a">
+          <svg viewBox="0 0 24 24" style="fill:#0a0a0a"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- LOKLOK -->
+    <div class="card" data-color="purple">
+      <div class="card-top">
+        <div class="brand-logo" style="background:linear-gradient(135deg,#6c3483,#9b59b6)">
+          <span style="font-family:'Syne',sans-serif;font-weight:900;font-size:0.72rem;color:#fff;letter-spacing:-0.3px">LOK<br>LOK</span>
+        </div>
+      </div>
+      <h3>Loklok Premium</h3>
+      <p class="desc">Nonton drama Asia, Barat & anime favorit dengan subtitle Indonesia lengkap, gratis tanpa iklan mengganggu.</p>
+      <ul class="features">
+        <li>Drama Asia & Barat terlengkap</li>
+        <li>Koleksi anime terbaru & lawas</li>
+        <li>Subtitle Indonesia & English</li>
+        <li>Streaming tanpa iklan</li>
+        <li>Kualitas HD tersedia</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 25.000</div>
+          <div class="price-amount" style="color:#b09fff">Rp 12.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20Loklok%20Premium" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#9b59b6,#6c3483)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+    <!-- CAPCUT PRO — Konsisten dengan card lain -->
+    <div class="card" data-color="black">
+      <div class="card-top">
+        <div class="brand-logo" style="background:#000;overflow:hidden;padding:0"><img src="data:image/jpeg;base64,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" alt="CapCut Pro" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>
+        <span class="popular-tag">✂️ Editor</span>
+      </div>
+      <h3>CapCut Pro</h3>
+      <p class="desc">Edit video tanpa batas dengan semua fitur premium terbuka, tanpa watermark, ekspor kualitas 4K.</p>
+      <ul class="features">
+        <li>Semua fitur Pro terbuka penuh</li>
+        <li>Cloud Storage 10GB – 100GB</li>
+        <li>Tanpa watermark di hasil ekspor</li>
+        <li>Ekspor video kualitas 4K</li>
+        <li>Template & efek premium eksklusif</li>
+      </ul>
+      <div class="price-row">
+        <div class="price">
+          <div class="price-slash">Rp 129.000</div>
+          <div class="price-amount" style="color:#ffffff">Rp 27.000</div>
+          <div class="price-period">/ bulan</div>
+        </div>
+        <a href="https://wa.me/6289504483200?text=Halo!%20Saya%20mau%20pesan%20paket%20CapCut%20Pro" target="_blank" class="btn-order" style="background:linear-gradient(135deg,#333,#111);border:1px solid rgba(255,255,255,0.2)">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pesan Sekarang
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="section-header">
+    <div class="section-tag">Cara Kerja</div>
+    <h2>Pesan dalam 3 Langkah Mudah</h2>
+    <p>Prosesnya cepat, aman, dan akun langsung aktif.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><h4>Pilih Paket</h4><p>Browse katalog dan pilih platform berlangganan yang kamu butuhkan.</p></div>
+    <div class="step"><div class="step-num">2</div><h4>Hubungi via WA</h4><p>Klik tombol pesan, langsung chat WhatsApp kami yang siap 24/7.</p></div>
+    <div class="step"><div class="step-num">3</div><h4>Bayar & Aktif</h4><p>Transfer / QRIS, akun langsung dikerjakan dan aktif dalam hitungan menit.</p></div>
+    <div class="step"><div class="step-num">4</div><h4>Nikmati!</h4><p>Akses penuh selama periode berlangganan. Kami siap bantu jika ada kendala.</p></div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust">
+  <div class="section-header">
+    <div class="section-tag">Kenapa Kami?</div>
+    <h2>Dipercaya Ribuan Pelanggan</h2>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-item"><div class="trust-icon">🛡️</div><div><h5>100% Aman</h5><p>Semua akun dikerjakan secara aman dan terverifikasi aktif sebelum dikirim.</p></div></div>
+    <div class="trust-item"><div class="trust-icon">⚡</div><div><h5>Proses Super Cepat</h5><p>Akun aktif dalam 5-30 menit setelah pembayaran dikonfirmasi.</p></div></div>
+    <div class="trust-item"><div class="trust-icon">🔄</div><div><h5>Garansi Penuh</h5><p>Jika ada masalah di tengah periode, kami ganti atau refund tanpa syarat.</p></div></div>
+    <div class="trust-item"><div class="trust-icon">💬</div><div><h5>CS 24/7 Responsif</h5><p>Tim kami selalu siap membantu lewat WhatsApp kapan pun kamu butuh.</p></div></div>
+    <div class="trust-item"><div class="trust-icon">💳</div><div><h5>Pembayaran Mudah</h5><p>Transfer bank, e-wallet (DANA, OVO, GoPay), dan QRIS semua diterima.</p></div></div>
+    <div class="trust-item"><div class="trust-icon">🎯</div><div><h5>Harga Transparan</h5><p>Tidak ada biaya tersembunyi. Harga yang tertera adalah harga final.</p></div></div>
+  </div>
+</section>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/6289504483200?text=Halo%20LapakPremium!%20Saya%20mau%20tanya%20tentang%20paket%20berlangganan" target="_blank" class="wa-float">
+  <div class="wa-float-label">Chat Kami Sekarang!</div>
+  <div class="wa-float-btn">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </div>
+</a>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">
+    <span class="brand-lapak">Lapak</span><span class="brand-premium">Premium</span>
+  </div>
+  <p>© 2025 LapakPremium — Platform Paket Berlangganan Digital Terpercaya</p>
+  <p style="margin-top:6px">Semua merek yang disebutkan adalah milik perusahaan masing-masing.</p>
+</footer>
+
+<script>
+  // Lightweight IntersectionObserver untuk fade-in
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }, i * 50);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.card,.step,.trust-item,.stat').forEach(el => {
+    el.style.cssText += 'opacity:0;transform:translateY(24px);transition:opacity 0.55s ease,transform 0.55s ease;';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
